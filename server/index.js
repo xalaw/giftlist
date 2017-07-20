@@ -15,7 +15,7 @@ let secret = {
 }
 
 if (process.env.NODE_ENV != 'production') {
-  secret = require('./secret');
+    secret = require('./secret');
 }
 
 const app = express();
@@ -125,16 +125,16 @@ function runServer(port = 3001) {
 }
 
 function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      server.close((err) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      });
+    return mongoose.disconnect().then(() => {
+        return new Promise((resolve, reject) => {
+            server.close((err) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve();
+            });
+        });
     });
-  });
 }
 
 if (require.main === module) {
