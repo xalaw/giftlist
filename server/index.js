@@ -1,8 +1,12 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
 
 let secret = {
     CLIENT_ID: process.env.CLIENT_ID,
@@ -105,21 +109,31 @@ app.get(/^(?!\/api(\/|$))/, (req, res) => {
 let server;
 function runServer(port = 3001) {
     return new Promise((resolve, reject) => {
+        mongoose.connect(databaseUrl = DATABASE_URL, err => {
+            if (err) {
+                return reject(err);
+            }
+        });
         server = app.listen(port, () => {
             resolve();
-        }).on('error', reject);
+        }).on('error', (err) => {
+            mongoose.disconnect();
+            reject(err);
+        });
     });
 }
 
 function closeServer() {
+  return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {
-        server.close(err => {
-            if (err) {
-                return reject(err);
-            }
-            resolve();
-        });
+      server.close((err) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
     });
+  });
 }
 
 if (require.main === module) {
