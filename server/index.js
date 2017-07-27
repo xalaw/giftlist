@@ -2,6 +2,7 @@ require('dotenv').config();
 const { DATABASE_URL, PORT } = require('./config');
 const path = require('path');
 const express = require('express');
+const { User } = require('./models');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
